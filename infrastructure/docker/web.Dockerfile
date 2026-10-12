@@ -1,11 +1,11 @@
-FROM node:22.19.0-bookworm-slim AS build
+FROM node:26.11.1-bookworm-slim AS build
 ENV PNPM_HOME=/pnpm PATH=/pnpm:$PATH
 RUN corepack enable
 WORKDIR /workspace
 COPY . .
 RUN pnpm install --frozen-lockfile && pnpm --filter @restaurant-os/web build
 
-FROM node:22.19.0-bookworm-slim AS runtime
+FROM node:26.11.1-bookworm-slim AS runtime
 ENV NODE_ENV=production HOSTNAME=0.0.0.0 PORT=3000
 WORKDIR /app
 COPY --from=build --chown=node:node /workspace/apps/web/.next/standalone ./
