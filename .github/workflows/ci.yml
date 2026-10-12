@@ -35,7 +35,7 @@ jobs:
       MFA_ENCRYPTION_KEY: CQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQk=
       CORS_ORIGINS: http://localhost:3000
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: pnpm/action-setup@v4
         with: { version: 10.15.0, run_install: false }
       - uses: actions/setup-node@v4
@@ -53,7 +53,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions: { contents: read }
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with: { fetch-depth: 0 }
       - uses: gitleaks/gitleaks-action@v2
         env: { GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}" }
@@ -61,7 +61,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions: { contents: read, security-events: write }
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: github/codeql-action/init@v3
         with: { languages: javascript-typescript }
       - uses: github/codeql-action/analyze@v3
