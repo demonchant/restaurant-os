@@ -1,0 +1,67 @@
+name: CI
+on:
+  pull_request:
+  push:
+    branches: [main]
+permissions: { contents: read }
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    services:
+      postgres:
+        image: postgres:17.6-alpine
+        env: { POSTGRES_DB: restaurant_os_test, POSTGRES_USER: restaurant_os, POSTGRES_PASSWORD: test-only }
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U restaurant_os -d restaurant_os_test"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+      redis:
+        image: redis:8.2-alpine
+        ports: ["6379:6379"]
+        options: >-
+          --health-cmd "redis-cli ping" --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      APP_ENV: test
+      APP_URL: http://localhost:3000
+      API_URL: http://localhost:3001
+      DATABASE_URL: postgresql://restaurant_os:test-only@localhost:5432/restaurant_os_test
+      TEST_DATABASE_URL: postgresql://restaurant_os:test-only@localhost:5432/restaurant_os_test
+      REDIS_URL: redis://localhost:6379
+      SESSION_SECRET: ci-test-secret-at-least-thirty-two-characters
+      OTP_PEPPER: ci-test-independent-otp-pepper-over-thirty-two
+      IDENTITY_TOKEN_PEPPER: ci-test-independent-identity-token-pepper
+      DEVICE_CREDENTIAL_PEPPER: ci-test-independent-device-credential-pepper
+      MFA_ENCRYPTION_KEY: CQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQk=
+      CORS_ORIGINS: http://localhost:3000
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with: { version: 10.15.0, run_install: false }
+      - uses: actions/setup-node@v4
+        with: { node-version: 22.19.0, cache: pnpm }
+      - run: pnpm install --frozen-lockfile
+      - name: Create least-privileged runtime database role
+        run: docker exec -i ${{ job.services.postgres.id }} psql -U restaurant_os -d restaurant_os_test < infrastructure/docker/postgres/init-runtime-role.sql
+      - run: pnpm db:migrate
+      - run: pnpm lint
+      - run: pnpm typecheck
+      - run: pnpm test
+      - run: pnpm build
+      - run: pnpm audit --audit-level high
+  secret-scan:
+    runs-on: ubuntu-latest
+    permissions: { contents: read }
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - uses: gitleaks/gitleaks-action@v2
+        env: { GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}" }
+  sast:
+    runs-on: ubuntu-latest
+    permissions: { contents: read, security-events: write }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: github/codeql-action/init@v3
+        with: { languages: javascript-typescript }
+      - uses: github/codeql-action/analyze@v3

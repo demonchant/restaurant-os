@@ -1,0 +1,29 @@
+{
+  "name": "restaurant-os",
+  "version": "0.0.0",
+  "private": true,
+  "packageManager": "pnpm@10.15.0",
+  "engines": { "node": ">=22.0.0" },
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev --parallel",
+    "lint": "turbo run lint",
+    "typecheck": "turbo run typecheck",
+    "test": "turbo run test",
+    "test:security": "pnpm --filter @restaurant-os/api test:security",
+    "check": "pnpm lint && pnpm typecheck && pnpm test && pnpm build",
+    "db:generate": "pnpm --filter @restaurant-os/database generate",
+    "db:migrate": "pnpm --filter @restaurant-os/database migrate",
+    "audit:dependencies": "pnpm audit --audit-level high"
+  },
+  "devDependencies": {
+    "@eslint/js": "9.34.0",
+    "eslint": "9.34.0",
+    "eslint-config-prettier": "10.1.8",
+    "globals": "16.3.0",
+    "prettier": "3.6.2",
+    "turbo": "2.10.10",
+    "typescript": "5.9.2",
+    "typescript-eslint": "8.41.0"
+  }
+}

@@ -1,0 +1,15 @@
+node_modules/
+dist/
+.next/
+coverage/
+.turbo/
+.pnpm-store/
+.deploy-test/
+.env
+.env.*
+!.env.example
+*.log
+*.tsbuildinfo
+*.pem
+*.key
+.DS_Store

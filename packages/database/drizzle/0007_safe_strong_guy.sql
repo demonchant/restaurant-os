@@ -1,0 +1,1 @@
+ALTER TABLE "product_ingredient_dependencies" ALTER COLUMN "quantity" SET DATA TYPE numeric(18, 6);

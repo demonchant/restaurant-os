@@ -1,0 +1,7 @@
+title = "Restaurant OS secret scanning"
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "Documented local-only examples"
+paths = ['''\.env\.example$''', '''docs/.*\.md$''']

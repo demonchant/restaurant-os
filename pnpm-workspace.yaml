@@ -1,0 +1,13 @@
+packages:
+  - apps/*
+  - services/*
+  - packages/*
+
+minimumReleaseAge: 1440
+
+onlyBuiltDependencies:
+  - argon2
+  - esbuild
+
+overrides:
+  esbuild: 0.25.12

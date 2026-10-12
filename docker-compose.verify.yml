@@ -1,0 +1,5 @@
+services:
+  redis:
+    # Host port 6379 is occupied by an unrelated local project. The
+    # verification stack only needs Redis on the private backend network.
+    ports: !reset []
