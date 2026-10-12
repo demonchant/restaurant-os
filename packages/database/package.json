@@ -5,6 +5,6 @@
     "build": "tsc -p tsconfig.json", "lint": "eslint src", "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "node -e \"console.log('Database integration tests are owned by the API workspace')\"", "generate": "drizzle-kit generate", "migrate": "tsx src/migrate.ts"
   },
-  "dependencies": { "drizzle-orm": "0.45.2", "postgres": "3.4.7" },
+  "dependencies": { "drizzle-orm": "0.45.4", "postgres": "3.4.9" },
   "devDependencies": { "@types/node": "24.3.0", "drizzle-kit": "0.31.10", "tsx": "4.20.5" }
 }
